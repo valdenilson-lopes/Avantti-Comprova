@@ -1,0 +1,125 @@
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header class="d-flex justify-content-between align-items-center">
+        <strong>Canhotos</strong>
+        <button cButton color="primary" size="sm" (click)="carregar()" [disabled]="carregando">
+          Atualizar
+        </button>
+      </c-card-header>
+
+      <c-card-body>
+        <c-row class="mb-3 g-2">
+          <c-col md="6">
+            <input
+              cFormControl
+              type="text"
+              placeholder="Pesquisar por NF, cliente, cidade ou chave"
+              [(ngModel)]="filtroTexto"
+              (ngModelChange)="aplicarFiltros()"
+            />
+          </c-col>
+
+          <c-col md="3">
+            <select cFormSelect [(ngModel)]="filtroTipo" (ngModelChange)="aplicarFiltros()">
+              <option value="pendentes">Somente pendentes</option>
+              <option value="recebidos">Somente recebidos</option>
+              <option value="todos">Todos</option>
+            </select>
+          </c-col>
+
+          <c-col md="3">
+            <select cFormSelect [(ngModel)]="itensPorPagina" (ngModelChange)="alterarItensPorPagina()">
+              <option [ngValue]="10">10 por página</option>
+              <option [ngValue]="25">25 por página</option>
+              <option [ngValue]="50">50 por página</option>
+              <option [ngValue]="100">100 por página</option>
+            </select>
+          </c-col>
+        </c-row>
+
+        <div *ngIf="erro" class="alert alert-danger py-2">
+          {{ erro }}
+        </div>
+
+        <div *ngIf="carregando" class="text-center py-4">
+          <c-spinner size="sm" />
+          <span class="ms-2">Carregando canhotos...</span>
+        </div>
+
+        <div *ngIf="!carregando" class="table-responsive">
+          <table cTable hover striped align="middle">
+            <thead>
+              <tr>
+                <th>NF</th>
+                <th>Cliente</th>
+                <th>Cidade/UF</th>
+                <th>Status entrega</th>
+                <th>Status canhoto</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let entrega of entregasPaginadas">
+                <td>{{ entrega.numero_nf || entrega.numero_documento || '-' }}</td>
+                <td>{{ entrega.cliente || '-' }}</td>
+                <td>{{ entrega.cidade || '-' }} / {{ entrega.uf || '-' }}</td>
+                <td>
+                  <c-badge [color]="entregaService.classeStatus(entrega.status)">
+                    {{ entregaService.descricaoStatus(entrega.status) }}
+                  </c-badge>
+                </td>
+                <td>
+                  <c-badge [color]="temCanhoto(entrega) ? 'success' : 'warning'">
+                    {{ temCanhoto(entrega) ? 'Recebido' : 'Pendente' }}
+                  </c-badge>
+                </td>
+                <td class="text-end">
+                  <a cButton color="info" size="sm" [routerLink]="['/entregas/detalhe', entrega.id]">
+                    Detalhes
+                  </a>
+                </td>
+              </tr>
+
+              <tr *ngIf="entregasPaginadas.length === 0">
+                <td colspan="6" class="text-center text-body-secondary py-4">
+                  Nenhum canhoto encontrado.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 mt-3">
+          <div class="text-body-secondary small">
+            Mostrando {{ registroInicial }} até {{ registroFinal }} de {{ entregasFiltradas.length }} registros
+          </div>
+
+          <div class="btn-group" role="group" aria-label="Paginação">
+            <button cButton color="secondary" variant="outline" size="sm" (click)="irParaPagina(1)" [disabled]="paginaAtual === 1">
+              Primeira
+            </button>
+            <button cButton color="secondary" variant="outline" size="sm" (click)="irParaPagina(paginaAtual - 1)" [disabled]="paginaAtual === 1">
+              Anterior
+            </button>
+            <button
+              *ngFor="let pagina of paginas"
+              cButton
+              size="sm"
+              [color]="pagina === paginaAtual ? 'primary' : 'secondary'"
+              [variant]="pagina === paginaAtual ? undefined : 'outline'"
+              (click)="irParaPagina(pagina)">
+              {{ pagina }}
+            </button>
+            <button cButton color="secondary" variant="outline" size="sm" (click)="irParaPagina(paginaAtual + 1)" [disabled]="paginaAtual === totalPaginas">
+              Próxima
+            </button>
+            <button cButton color="secondary" variant="outline" size="sm" (click)="irParaPagina(totalPaginas)" [disabled]="paginaAtual === totalPaginas">
+              Última
+            </button>
+          </div>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

@@ -1,0 +1,47 @@
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>Motoristas</strong>
+      </c-card-header>
+
+      <c-card-body>
+        <div *ngIf="carregando">
+          Carregando motoristas...
+        </div>
+
+        <div *ngIf="mensagemErro" class="text-danger mb-3">
+          {{ mensagemErro }}
+        </div>
+
+        <table cTable hover striped *ngIf="!carregando">
+          <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>Filial</th>
+            <th>CNPJ</th>
+            <th>Ativo</th>
+            <th>Assinatura Digital</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let item of motoristas">
+            <td>{{ item.codigo_motorista }}</td>
+            <td>{{ item.nome }}</td>
+            <td>{{ item.codfilial }}</td>
+            <td>{{ item.cnpj }}</td>
+            <td>{{ item.ativo ? 'Sim' : 'Não' }}</td>
+            <td>{{ item.exige_assinatura_digital ? 'Sim' : 'Não' }}</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div *ngIf="!carregando && motoristas.length === 0" class="text-body-secondary">
+          Nenhum motorista encontrado.
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

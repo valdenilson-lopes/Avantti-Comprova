@@ -1,0 +1,81 @@
+.kpi-card {
+  border: 0;
+  color: #fff;
+  min-height: 116px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, .16);
+}
+
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  right: -36px;
+  top: -36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .14);
+}
+
+.kpi-icon {
+  font-size: 1.45rem;
+  line-height: 1;
+  margin-bottom: .45rem;
+}
+
+.kpi-label {
+  color: rgba(255, 255, 255, .88);
+  font-size: .82rem;
+  font-weight: 500;
+}
+
+.kpi-value {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-top: .2rem;
+}
+
+.kpi-value.valor {
+  font-size: 1.35rem;
+}
+
+.kpi-total {
+  background: linear-gradient(135deg, #2c4975, #3895b8);
+}
+
+.kpi-pendente {
+  background: linear-gradient(135deg, #f39c12, #f1c40f);
+}
+
+.kpi-sucesso {
+  background: linear-gradient(135deg, #1e8449, #27ae60);
+}
+
+.kpi-erro {
+  background: linear-gradient(135deg, #b03a2e, #e74c3c);
+}
+
+.kpi-info {
+  background: linear-gradient(135deg, #2471a3, #3498db);
+}
+
+.kpi-devolucao {
+  background: linear-gradient(135deg, #922b21, #c0392b);
+}
+
+.kpi-alerta {
+  background: linear-gradient(135deg, #d35400, #e67e22);
+}
+
+.kpi-valor {
+  background: linear-gradient(135deg, #145a32, #229954);
+}

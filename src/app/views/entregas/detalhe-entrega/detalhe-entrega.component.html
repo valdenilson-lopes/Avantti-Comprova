@@ -1,0 +1,198 @@
+<c-row class="mb-3">
+  <c-col xs="12">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h3 class="mb-0">Detalhes da Entrega</h3>
+        <small class="text-body-secondary">Dossiê da entrega, comprovação, fotos e anexos enviados pelo motorista</small>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button cButton color="secondary" variant="outline" type="button" routerLink="/entregas/monitor">
+          Voltar
+        </button>
+        <button cButton color="primary" type="button" (click)="carregar()" [disabled]="carregando">
+          Atualizar
+        </button>
+      </div>
+    </div>
+  </c-col>
+</c-row>
+
+<div *ngIf="erro" class="alert alert-danger">
+  {{ erro }}
+</div>
+
+<div *ngIf="carregando" class="text-center py-5">
+  <c-spinner size="sm" />
+  <span class="ms-2">Carregando detalhes da entrega...</span>
+</div>
+
+<ng-container *ngIf="!carregando && entrega">
+  <c-row class="g-3 mb-4">
+    <c-col md="3">
+      <c-card class="resumo-card resumo-documento">
+        <c-card-body>
+          <div class="resumo-label">Documento</div>
+          <div class="resumo-value">{{ entrega.numero_nf || entrega.numero_documento || '-' }}</div>
+          <small>Série {{ entrega.serie || entrega.serie_documento || '-' }}</small>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <c-col md="3">
+      <c-card class="resumo-card resumo-status">
+        <c-card-body>
+          <div class="resumo-label">Status</div>
+          <div class="resumo-value">
+            {{ entregaService.descricaoStatus(entrega.status) }}
+          </div>
+          <small>{{ entrega.status || 'Não informado' }}</small>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <c-col md="3">
+      <c-card class="resumo-card resumo-canhoto">
+        <c-card-body>
+          <div class="resumo-label">Comprovação</div>
+          <div class="resumo-value">{{ possuiCanhoto ? 'Com anexo' : 'Pendente' }}</div>
+          <small>{{ anexos.length }} arquivo(s)</small>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <c-col md="3">
+      <c-card class="resumo-card resumo-valor">
+        <c-card-body>
+          <div class="resumo-label">Valor total</div>
+          <div class="resumo-value">{{ valorTotalNumero() | currency:'BRL':'symbol':'1.2-2' }}</div>
+          <small>{{ entrega.data_emissao || '-' }}</small>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+
+  <c-row class="g-3">
+    <c-col lg="7">
+      <c-card class="mb-3">
+        <c-card-header>
+          <strong>Fotos e anexos da comprovação</strong>
+        </c-card-header>
+        <c-card-body>
+          <div *ngIf="!temAnexos()" class="empty-anexos">
+            Nenhuma foto, assinatura ou anexo informado para esta entrega.
+          </div>
+
+          <div *ngIf="temAnexos()" class="anexos-layout">
+            <div class="preview-box">
+              <img
+                *ngIf="anexoSelecionado"
+                [src]="anexoSelecionado.url"
+                [alt]="anexoSelecionado.nome"
+                class="preview-img"
+                (click)="abrirAnexo(anexoSelecionado)"
+              />
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3" *ngIf="anexoSelecionado">
+              <div>
+                <div class="fw-semibold">{{ anexoSelecionado.nome }}</div>
+                <small class="text-body-secondary">
+                  {{ anexoSelecionado.tipo === 'assinatura' ? 'Assinatura' : 'Foto/anexo da entrega' }}
+                </small>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button cButton color="primary" size="sm" type="button" (click)="abrirAnexo(anexoSelecionado)">
+                  Visualizar
+                </button>
+                <button cButton color="secondary" variant="outline" size="sm" type="button" (click)="copiarLink(anexoSelecionado)">
+                  Copiar link
+                </button>
+              </div>
+            </div>
+
+            <div class="thumb-grid mt-3">
+              <button
+                type="button"
+                class="thumb-card"
+                *ngFor="let anexo of anexos"
+                [class.active]="anexoSelecionado?.url === anexo.url"
+                (click)="selecionarAnexo(anexo)">
+                <img [src]="anexo.url" [alt]="anexo.nome" />
+                <span>{{ anexo.nome }}</span>
+              </button>
+            </div>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <c-col lg="5">
+      <c-card class="mb-3">
+        <c-card-header>
+          <strong>Dados da entrega</strong>
+        </c-card-header>
+        <c-card-body>
+          <div class="info-list">
+            <div><span>Cliente</span><strong>{{ entrega.cliente || '-' }}</strong></div>
+            <div><span>CNPJ destinatário</span><strong>{{ entrega.cnpj_destinatario || '-' }}</strong></div>
+            <div><span>Endereço</span><strong>{{ entrega.endereco || '-' }}</strong></div>
+            <div><span>Bairro</span><strong>{{ entrega.bairro_destinatario || '-' }}</strong></div>
+            <div><span>CEP</span><strong>{{ entrega.cep_destinatario || '-' }}</strong></div>
+            <div><span>Cidade/UF</span><strong>{{ entrega.cidade || '-' }} / {{ entrega.uf || '-' }}</strong></div>
+            <div><span>Motorista</span><strong>{{ entrega.motorista_responsavel || '-' }}</strong></div>
+          </div>
+        </c-card-body>
+      </c-card>
+
+      <c-card class="mb-3">
+        <c-card-header>
+          <strong>Documento fiscal</strong>
+        </c-card-header>
+        <c-card-body>
+          <div class="info-list">
+            <div><span>Chave NFe</span><strong class="text-break">{{ entrega.chave_nfe || '-' }}</strong></div>
+            <div><span>Modelo</span><strong>{{ entrega.modelo_documento || '-' }}</strong></div>
+            <div><span>Série</span><strong>{{ entrega.serie || entrega.serie_documento || '-' }}</strong></div>
+            <div><span>Número</span><strong>{{ entrega.numero_nf || entrega.numero_documento || '-' }}</strong></div>
+            <div><span>Natureza</span><strong>{{ entrega.natureza_operacao || '-' }}</strong></div>
+            <div><span>Competência</span><strong>{{ entrega.competencia || '-' }}</strong></div>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+
+  <c-row class="g-3">
+    <c-col lg="6">
+      <c-card>
+        <c-card-header>
+          <strong>Localização e comprovação</strong>
+        </c-card-header>
+        <c-card-body>
+          <div class="info-list">
+            <div><span>Latitude</span><strong>{{ entrega.latitude || '-' }}</strong></div>
+            <div><span>Longitude</span><strong>{{ entrega.longitude || '-' }}</strong></div>
+            <div><span>Atualizado em</span><strong>{{ entrega.atualizado_em || '-' }}</strong></div>
+            <div><span>Assinatura</span><strong>{{ entrega.assinatura_url ? 'Informada' : 'Não informada' }}</strong></div>
+            <div><span>Fotos/anexos</span><strong>{{ anexos.length }}</strong></div>
+          </div>
+        </c-card-body>
+      </c-card>
+    </c-col>
+
+    <c-col lg="6">
+      <c-card>
+        <c-card-header>
+          <strong>Observações</strong>
+        </c-card-header>
+        <c-card-body>
+          <p class="mb-0 observacao-texto">
+            {{ entrega.observacao || 'Nenhuma observação registrada.' }}
+          </p>
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+</ng-container>

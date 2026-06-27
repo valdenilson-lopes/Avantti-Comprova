@@ -1,0 +1,146 @@
+.resumo-card {
+  border: 0;
+  color: #fff;
+  min-height: 118px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
+
+  small {
+    color: rgba(255, 255, 255, .82);
+  }
+}
+
+.resumo-label {
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  opacity: .85;
+  margin-bottom: .35rem;
+}
+
+.resumo-value {
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.resumo-documento {
+  background: linear-gradient(135deg, #2c4975, #3895b8);
+}
+
+.resumo-status {
+  background: linear-gradient(135deg, #d35400, #f39c12);
+}
+
+.resumo-canhoto {
+  background: linear-gradient(135deg, #2471a3, #3498db);
+}
+
+.resumo-valor {
+  background: linear-gradient(135deg, #1e8449, #27ae60);
+}
+
+.empty-anexos {
+  border: 1px dashed #cfd4dc;
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  color: #6c757d;
+  background: #f8f9fa;
+}
+
+.preview-box {
+  width: 100%;
+  min-height: 380px;
+  background: #f4f6f8;
+  border: 1px solid #dde2e8;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.preview-img {
+  width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+
+.thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.thumb-card {
+  border: 1px solid #d8dbe0;
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: all .15s ease-in-out;
+
+  img {
+    width: 100%;
+    height: 82px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f4f6f8;
+    display: block;
+  }
+
+  span {
+    display: block;
+    margin-top: 6px;
+    font-size: .78rem;
+    color: #495057;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover,
+  &.active {
+    border-color: #3895b8;
+    box-shadow: 0 6px 16px rgba(56, 149, 184, .20);
+    transform: translateY(-1px);
+  }
+}
+
+.info-list {
+  display: grid;
+  gap: 12px;
+
+  div {
+    display: grid;
+    gap: 3px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #edf0f3;
+  }
+
+  div:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  span {
+    font-size: .78rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  strong {
+    font-size: .95rem;
+    color: #212529;
+    font-weight: 600;
+  }
+}
+
+.observacao-texto {
+  min-height: 80px;
+  white-space: pre-wrap;
+}

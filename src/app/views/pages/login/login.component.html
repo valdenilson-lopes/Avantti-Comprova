@@ -1,0 +1,70 @@
+<div class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center">
+  <c-container breakpoint="md">
+    <c-row class="justify-content-center">
+      <c-col lg="10" xl="8">
+        <c-card-group>
+          <c-card class="p-4">
+            <c-card-body>
+              <form cForm (ngSubmit)="entrar()">
+                <h1>Login</h1>
+                <p class="text-body-secondary">Entre com seu usuário e senha</p>
+
+                <div *ngIf="erro" class="alert alert-danger py-2 mb-3" role="alert">
+                  {{ erro }}
+                </div>
+
+                <c-input-group class="mb-3">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilUser"></svg>
+                  </span>
+                  <input
+                    autoComplete="username"
+                    cFormControl
+                    placeholder="Usuário"
+                    [(ngModel)]="usuario"
+                    name="usuario"
+                    [disabled]="carregando"
+                  />
+                </c-input-group>
+
+                <c-input-group class="mb-4">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input
+                    autoComplete="current-password"
+                    cFormControl
+                    placeholder="Senha"
+                    type="password"
+                    [(ngModel)]="senha"
+                    name="senha"
+                    [disabled]="carregando"
+                  />
+                </c-input-group>
+
+                <c-row>
+                  <c-col xs="6">
+                    <button cButton class="px-4 btn-avantti" type="submit" [disabled]="carregando">
+                      {{ carregando ? 'Entrando...' : 'Entrar' }}
+                    </button>
+                  </c-col>
+                </c-row>
+              </form>
+            </c-card-body>
+          </c-card>
+
+          <c-card [style.minWidth.%]="44" class="text-white py-5 login-side-card">
+            <c-card-body class="text-center d-flex flex-column justify-content-center align-items-center">
+              <img src="assets/images/logo.png" alt="Avantti Sistemas" class="login-logo mb-4" />
+
+              <div class="login-side-content">
+                <h2 class="mb-3">Avantti ERP Web</h2>
+                <p class="mb-0">Gestão inteligente, para decisões precisas.</p>
+              </div>
+            </c-card-body>
+          </c-card>
+        </c-card-group>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

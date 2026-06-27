@@ -1,0 +1,154 @@
+<c-row class="mb-3">
+  <c-col xs="12">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h3 class="mb-0 fw-bold">Dashboard de Entregas</h3>
+        <small class="text-body-secondary">Visão geral da operação e comprovação das entregas</small>
+      </div>
+      <button class="btn btn-primary" type="button" (click)="carregar()" [disabled]="carregando">
+        <c-spinner *ngIf="carregando" size="sm" class="me-2" />
+        Atualizar
+      </button>
+    </div>
+  </c-col>
+</c-row>
+
+<div *ngIf="erro" class="alert alert-danger">{{ erro }}</div>
+
+<c-row class="g-3 mb-4">
+  <c-col sm="6" xl="3">
+    <c-card class="kpi-card kpi-total">
+      <c-card-body>
+        <div class="kpi-icon">📦</div>
+        <div class="kpi-label">Total de entregas</div>
+        <div class="kpi-value">{{ resumo.total }}</div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col sm="6" xl="3">
+    <c-card class="kpi-card kpi-pendente">
+      <c-card-body>
+        <div class="kpi-icon">⏳</div>
+        <div class="kpi-label">Pendentes</div>
+        <div class="kpi-value">{{ resumo.abertas }}</div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col sm="6" xl="3">
+    <c-card class="kpi-card kpi-sucesso">
+      <c-card-body>
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-label">Comprovadas</div>
+        <div class="kpi-value">{{ resumo.entregues }}</div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col sm="6" xl="3">
+    <c-card class="kpi-card kpi-erro">
+      <c-card-body>
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-label">Ocorrências</div>
+        <div class="kpi-value">{{ resumo.ocorrencias }}</div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col sm="6" xl="3">
+    <c-card class="kpi-card kpi-info">
+      <c-card-body>
+        <div class="kpi-icon">📄</div>
+        <div class="kpi-label">Entregas parciais</div>
+        <div class="kpi-value">{{ resumo.parciais }}</div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col sm="6" xl="3">
+    <c-card class="kpi-card kpi-devolucao">
+      <c-card-body>
+        <div class="kpi-icon">↩️</div>
+        <div class="kpi-label">Devoluções</div>
+        <div class="kpi-value">{{ resumo.devolucoes }}</div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col sm="6" xl="3">
+    <c-card class="kpi-card kpi-alerta">
+      <c-card-body>
+        <div class="kpi-icon">🖊️</div>
+        <div class="kpi-label">Sem canhoto</div>
+        <div class="kpi-value">{{ resumo.semCanhoto }}</div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col sm="6" xl="3">
+    <c-card class="kpi-card kpi-valor">
+      <c-card-body>
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-label">Valor total</div>
+        <div class="kpi-value valor">{{ resumo.valorTotal | currency:'BRL':'symbol':'1.2-2' }}</div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+
+<c-row class="g-3">
+  <c-col lg="6">
+    <c-card class="shadow-sm">
+      <c-card-header class="fw-semibold">Entregas por status</c-card-header>
+      <c-card-body>
+        <table cTable hover responsive>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th class="text-end">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of porStatus">
+              <td>
+                <c-badge [color]="entregaService.classeStatus(item.status)">{{ item.status }}</c-badge>
+              </td>
+              <td class="text-end fw-semibold">{{ item.quantidade }}</td>
+            </tr>
+            <tr *ngIf="porStatus.length === 0">
+              <td colspan="2" class="text-center text-body-secondary py-4">Nenhum status encontrado.</td>
+            </tr>
+          </tbody>
+        </table>
+      </c-card-body>
+    </c-card>
+  </c-col>
+
+  <c-col lg="6">
+    <c-card class="shadow-sm">
+      <c-card-header class="fw-semibold">Top cidades</c-card-header>
+      <c-card-body>
+        <table cTable hover responsive>
+          <thead>
+            <tr>
+              <th>Cidade</th>
+              <th>UF</th>
+              <th class="text-end">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of porCidade">
+              <td>{{ item.cidade }}</td>
+              <td>{{ item.uf || '-' }}</td>
+              <td class="text-end fw-semibold">{{ item.quantidade }}</td>
+            </tr>
+            <tr *ngIf="porCidade.length === 0">
+              <td colspan="3" class="text-center text-body-secondary py-4">Nenhuma cidade encontrada.</td>
+            </tr>
+          </tbody>
+        </table>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
