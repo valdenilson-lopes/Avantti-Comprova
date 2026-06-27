@@ -1,0 +1,225 @@
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4 usuarios-card">
+      <c-card-header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+        <div>
+          <strong>Usuários</strong>
+          <div class="text-body-secondary small">Cadastro, alteração e controle de acesso dos usuários</div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="carregar()" [disabled]="carregando || salvando">
+            Atualizar
+          </button>
+
+          <button type="button" class="btn btn-primary btn-sm" (click)="abrirNovo()" [disabled]="salvando">
+            Novo Usuário
+          </button>
+        </div>
+      </c-card-header>
+
+      <c-card-body>
+        <div *ngIf="erro && !modalVisivel" class="alert alert-danger py-2">{{ erro }}</div>
+        <div *ngIf="sucesso && !modalVisivel" class="alert alert-success py-2">{{ sucesso }}</div>
+
+        <c-row class="mb-3 g-2">
+          <c-col md="5">
+            <input cFormControl type="text" placeholder="Pesquisar por nome, usuário ou e-mail" [(ngModel)]="filtroTexto" (ngModelChange)="aplicarFiltros()" />
+          </c-col>
+
+          <c-col md="2">
+            <select cFormSelect [(ngModel)]="filtroAtivo" (ngModelChange)="aplicarFiltros()">
+              <option value="">Todos</option>
+              <option value="S">Ativos</option>
+              <option value="N">Inativos</option>
+            </select>
+          </c-col>
+
+          <c-col md="3">
+            <select cFormSelect [(ngModel)]="filtroAdministrador" (ngModelChange)="aplicarFiltros()">
+              <option value="">Todos os perfis</option>
+              <option value="S">Administradores</option>
+              <option value="N">Usuários comuns</option>
+            </select>
+          </c-col>
+
+          <c-col md="2">
+            <select cFormSelect [(ngModel)]="itensPorPagina" (ngModelChange)="alterarItensPorPagina()">
+              <option [ngValue]="10">10 por página</option>
+              <option [ngValue]="25">25 por página</option>
+              <option [ngValue]="50">50 por página</option>
+              <option [ngValue]="100">100 por página</option>
+            </select>
+          </c-col>
+        </c-row>
+
+        <div *ngIf="carregando" class="text-center py-4">
+          <c-spinner size="sm" />
+          <span class="ms-2">Carregando usuários...</span>
+        </div>
+
+        <div *ngIf="!carregando" class="table-responsive">
+          <table cTable hover striped align="middle" class="mb-0 usuarios-table">
+            <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Usuário</th>
+              <th>E-mail</th>
+              <th>Perfil</th>
+              <th>Status</th>
+              <th class="text-end">Ações</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let usuario of usuariosPaginados">
+              <td class="fw-semibold">{{ usuario.nome }}</td>
+              <td>{{ usuario.usuario }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>
+                <c-badge [color]="usuario.administrador ? 'primary' : 'secondary'">
+                  {{ usuario.administrador ? 'Administrador' : 'Usuário' }}
+                </c-badge>
+              </td>
+              <td>
+                <c-badge [color]="usuario.ativo ? 'success' : 'danger'">
+                  {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
+                </c-badge>
+              </td>
+              <td class="text-end">
+                <div class="d-flex justify-content-end gap-2 flex-wrap">
+                  <button type="button" class="btn btn-outline-primary btn-sm" (click)="abrirEditar(usuario)">
+                    Alterar
+                  </button>
+
+                  <button type="button" class="btn btn-outline-warning btn-sm" (click)="abrirAlterarSenha(usuario)">
+                    Senha
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    [ngClass]="usuario.ativo ? 'btn-outline-secondary' : 'btn-outline-success'"
+                    (click)="alternarAtivo(usuario)"
+                    [disabled]="salvando"
+                  >
+                    {{ usuario.ativo ? 'Inativar' : 'Ativar' }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="usuariosPaginados.length === 0">
+              <td colspan="6" class="text-center text-body-secondary py-4">Nenhum usuário encontrado.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 mt-3">
+          <div class="text-body-secondary small">
+            Mostrando {{ registroInicial }} até {{ registroFinal }} de {{ usuariosFiltrados.length }} registros
+          </div>
+
+          <div class="btn-group" role="group" aria-label="Paginação">
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="irParaPagina(1)" [disabled]="paginaAtual === 1">Primeira</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="irParaPagina(paginaAtual - 1)" [disabled]="paginaAtual === 1">Anterior</button>
+            <button
+              *ngFor="let pagina of paginas"
+              type="button"
+              class="btn btn-sm"
+              [ngClass]="pagina === paginaAtual ? 'btn-primary' : 'btn-outline-secondary'"
+              (click)="irParaPagina(pagina)"
+            >
+              {{ pagina }}
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="irParaPagina(paginaAtual + 1)" [disabled]="paginaAtual === totalPaginas">Próxima</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="irParaPagina(totalPaginas)" [disabled]="paginaAtual === totalPaginas">Última</button>
+          </div>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+
+<c-modal [visible]="modalVisivel" alignment="center" size="lg" (visibleChange)="modalVisivel = $event">
+  <c-modal-header>
+    <h5 cModalTitle>{{ tituloModal }}</h5>
+    <button type="button" class="btn-close" aria-label="Fechar" (click)="fecharModal()"></button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <div *ngIf="erro" class="alert alert-danger py-2">{{ erro }}</div>
+
+    <ng-container *ngIf="modo !== 'senha'; else alterarSenhaTemplate">
+      <c-row class="g-3">
+        <c-col md="8">
+          <label class="form-label">Nome</label>
+          <input cFormControl type="text" [(ngModel)]="usuarioSelecionado.nome" maxlength="120" />
+        </c-col>
+
+        <c-col md="4">
+          <label class="form-label">Usuário/Login</label>
+          <input cFormControl type="text" [(ngModel)]="usuarioSelecionado.usuario" maxlength="50" />
+        </c-col>
+
+        <c-col md="8">
+          <label class="form-label">E-mail</label>
+          <input cFormControl type="email" [(ngModel)]="usuarioSelecionado.email" maxlength="255" />
+        </c-col>
+
+        <c-col md="4" *ngIf="modo === 'novo'">
+          <label class="form-label">Senha</label>
+          <input cFormControl type="password" [(ngModel)]="usuarioSelecionado.senha" maxlength="80" />
+        </c-col>
+
+        <c-col md="6">
+          <c-form-check>
+            <input cFormCheckInput type="checkbox" id="chkAtivo" [(ngModel)]="usuarioSelecionado.ativo" />
+            <label cFormCheckLabel for="chkAtivo">Usuário ativo</label>
+          </c-form-check>
+        </c-col>
+
+        <c-col md="6">
+          <c-form-check>
+            <input cFormCheckInput type="checkbox" id="chkAdministrador" [(ngModel)]="usuarioSelecionado.administrador" />
+            <label cFormCheckLabel for="chkAdministrador">Perfil administrador</label>
+          </c-form-check>
+        </c-col>
+
+        <c-col xs="12">
+          <div class="alert alert-info py-2 mb-0">
+            As permissões detalhadas serão configuradas futuramente. Por enquanto, o campo <strong>Administrador</strong> define o perfil inicial do usuário.
+          </div>
+        </c-col>
+      </c-row>
+    </ng-container>
+
+    <ng-template #alterarSenhaTemplate>
+      <div class="mb-3 p-3 bg-light rounded border">
+        <strong>{{ usuarioSelecionado.nome }}</strong>
+        <div class="text-body-secondary small">{{ usuarioSelecionado.usuario }}</div>
+      </div>
+
+      <c-row class="g-3">
+        <c-col md="6">
+          <label class="form-label">Nova senha</label>
+          <input cFormControl type="password" [(ngModel)]="novaSenha" maxlength="80" />
+        </c-col>
+
+        <c-col md="6">
+          <label class="form-label">Confirmar senha</label>
+          <input cFormControl type="password" [(ngModel)]="confirmarSenha" maxlength="80" />
+        </c-col>
+      </c-row>
+    </ng-template>
+  </c-modal-body>
+
+  <c-modal-footer>
+    <button type="button" class="btn btn-outline-secondary" (click)="fecharModal()" [disabled]="salvando">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="salvar()" [disabled]="salvando">
+      <c-spinner *ngIf="salvando" size="sm" class="me-2" />
+      {{ textoBotaoSalvar }}
+    </button>
+  </c-modal-footer>
+</c-modal>

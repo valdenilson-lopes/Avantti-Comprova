@@ -1,0 +1,39 @@
+.usuarios-card {
+  border: 0;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.06);
+}
+
+c-card-header {
+  background: #fff;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.table-responsive {
+  min-height: 220px;
+}
+
+.usuarios-table {
+  th {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6c757d;
+    white-space: nowrap;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+}
+
+.btn-sm {
+  white-space: nowrap;
+}
+
+.alert-info {
+  border-left: 4px solid #3895b8;
+}
+
+.modal-footer {
+  background: #f8f9fa;
+}

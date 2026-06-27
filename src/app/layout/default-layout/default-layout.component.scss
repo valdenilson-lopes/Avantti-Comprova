@@ -1,34 +1,43 @@
-:host::ng-deep {
-  .ng-scrollbar {
-    --scrollbar-padding: 1px;
-    --scrollbar-size: 5px;
-    --scrollbar-thumb-color: var(--cui-gray-500, #aab3c5);
-    --scrollbar-thumb-hover-color: var(--cui-gray-400, #cfd4de);
-    --scrollbar-hover-size: calc(var(--scrollbar-size) * 1.5);
-    --scrollbar-border-radius: 5px;
-  }
-
-  .ng-scroll-content {
-    display: flex;
-    min-height: 100%;
-  }
-
-  //.sidebar-nav {
-  //  scrollbar-color: var(--cui-gray-500, #444) transparent;
-  //}
+// Layout base
+:host {
+  display: block;
 }
 
-// ng-scrollbar css variables
-//.cui-scrollbar {
-//  --scrollbar-border-radius: 7px;
-//  --scrollbar-padding: 1px;
-//  --scrollbar-viewport-margin: 0;
-//  --scrollbar-track-color: transparent;
-//  --scrollbar-wrapper-color: transparent;
-//  --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
-//  --scrollbar-thumb-hover-color: var(--scrollbar-thumb-color);
-//  --scrollbar-size: 5px;
-//  --scrollbar-hover-size: var(--scrollbar-size);
-//  --scrollbar-thumb-transition: height ease-out 150ms, width ease-out 150ms;
-//  --scrollbar-track-transition: height ease-out 150ms, width ease-out 150ms;
-//}
+.wrapper {
+  width: 100%;
+  padding-left: var(--cui-sidebar-occupy-start, 0);
+  will-change: auto;
+  transition: padding .15s;
+}
+
+.header {
+  min-height: 4rem;
+}
+
+.body {
+  background: var(--cui-body-bg);
+}
+
+.sidebar-toggler {
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  border: 0;
+  background: transparent;
+}
+
+c-sidebar-footer {
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Evita que o nav fique comprimido e suma com itens finais
+c-sidebar-nav {
+  display: block;
+  padding-bottom: .75rem;
+}

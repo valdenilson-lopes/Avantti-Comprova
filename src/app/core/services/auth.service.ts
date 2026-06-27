@@ -20,7 +20,6 @@ export class AuthService {
   private readonly CHAVE_TOKEN = 'token';
   private readonly CHAVE_EXPIRA_EM = 'token_expira_em';
 
-  // 8 horas de sessão local
   private readonly TEMPO_SESSAO_MS = 8 * 60 * 60 * 1000;
 
   constructor(
@@ -31,7 +30,7 @@ export class AuthService {
   async login(usuario: string, senha: string): Promise<UsuarioLogado | null> {
     const usuarioLogado = await this.usuarioService.autenticar(usuario, senha);
 
-    if (!usuarioLogado) {
+    if (!usuarioLogado || usuarioLogado.id === undefined || usuarioLogado.id === null) {
       this.limparSessao();
       return null;
     }
@@ -115,8 +114,6 @@ export class AuthService {
   }
 
   private gerarTokenLocal(usuario: Usuario): string {
-    // Token local apenas para controle do front-end enquanto o login é feito via tabela usuarios no Supabase.
-    // Quando migrar para Supabase Auth/JWT real, este método deve ser substituído pelo access_token retornado pelo Supabase.
     const base = `${usuario.id}:${usuario.usuario}:${Date.now()}`;
     return btoa(unescape(encodeURIComponent(base)));
   }

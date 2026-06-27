@@ -31,6 +31,11 @@ export const routes: Routes = [
         loadComponent: () => import('./views/motoristas/motoristas.component').then(m => m.MotoristasComponent)
       },
       {
+        path: 'administracao',
+        loadChildren: () =>
+          import('./views/administracao/administracao.routes').then(m => m.administracaoRoutes)
+      },
+      {
         path: 'base',
         loadChildren: () => import('./views/base/routes').then(m => m.routes)
       },
