@@ -17,7 +17,7 @@ export const navItems: INavData[] = [
     url: '/entregas',
     iconComponent: {
       name: 'cilTruck'
-    }, 
+    },
     children: [
       {
         name: 'Dashboard',

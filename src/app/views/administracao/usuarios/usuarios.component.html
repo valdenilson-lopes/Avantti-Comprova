@@ -61,57 +61,57 @@
         <div *ngIf="!carregando" class="table-responsive">
           <table cTable hover striped align="middle" class="mb-0 usuarios-table">
             <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Usuário</th>
-              <th>E-mail</th>
-              <th>Perfil</th>
-              <th>Status</th>
-              <th class="text-end">Ações</th>
-            </tr>
+              <tr>
+                <th>Nome</th>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Status</th>
+                <th class="text-end">Ações</th>
+              </tr>
             </thead>
 
             <tbody>
-            <tr *ngFor="let usuario of usuariosPaginados">
-              <td class="fw-semibold">{{ usuario.nome }}</td>
-              <td>{{ usuario.usuario }}</td>
-              <td>{{ usuario.email }}</td>
-              <td>
-                <c-badge [color]="usuario.administrador ? 'primary' : 'secondary'">
-                  {{ usuario.administrador ? 'Administrador' : 'Usuário' }}
-                </c-badge>
-              </td>
-              <td>
-                <c-badge [color]="usuario.ativo ? 'success' : 'danger'">
-                  {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
-                </c-badge>
-              </td>
-              <td class="text-end">
-                <div class="d-flex justify-content-end gap-2 flex-wrap">
-                  <button type="button" class="btn btn-outline-primary btn-sm" (click)="abrirEditar(usuario)">
-                    Alterar
-                  </button>
+              <tr *ngFor="let usuario of usuariosPaginados">
+                <td class="fw-semibold">{{ usuario.nome }}</td>
+                <td>{{ usuario.usuario }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>
+                  <c-badge [color]="usuario.administrador ? 'primary' : 'secondary'">
+                    {{ usuario.administrador ? 'Administrador' : 'Usuário' }}
+                  </c-badge>
+                </td>
+                <td>
+                  <c-badge [color]="usuario.ativo ? 'success' : 'danger'">
+                    {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
+                  </c-badge>
+                </td>
+                <td class="text-end">
+                  <div class="d-flex justify-content-end gap-2 flex-wrap">
+                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="abrirEditar(usuario)">
+                      Alterar
+                    </button>
 
-                  <button type="button" class="btn btn-outline-warning btn-sm" (click)="abrirAlterarSenha(usuario)">
-                    Senha
-                  </button>
+                    <button type="button" class="btn btn-outline-warning btn-sm" (click)="abrirAlterarSenha(usuario)">
+                      Senha
+                    </button>
 
-                  <button
-                    type="button"
-                    class="btn btn-sm"
-                    [ngClass]="usuario.ativo ? 'btn-outline-secondary' : 'btn-outline-success'"
-                    (click)="alternarAtivo(usuario)"
-                    [disabled]="salvando"
-                  >
-                    {{ usuario.ativo ? 'Inativar' : 'Ativar' }}
-                  </button>
-                </div>
-              </td>
-            </tr>
+                    <button
+                      type="button"
+                      class="btn btn-sm"
+                      [ngClass]="usuario.ativo ? 'btn-outline-secondary' : 'btn-outline-success'"
+                      (click)="alternarAtivo(usuario)"
+                      [disabled]="salvando"
+                    >
+                      {{ usuario.ativo ? 'Inativar' : 'Ativar' }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
 
-            <tr *ngIf="usuariosPaginados.length === 0">
-              <td colspan="6" class="text-center text-body-secondary py-4">Nenhum usuário encontrado.</td>
-            </tr>
+              <tr *ngIf="usuariosPaginados.length === 0">
+                <td colspan="6" class="text-center text-body-secondary py-4">Nenhum usuário encontrado.</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -154,23 +154,30 @@
     <ng-container *ngIf="modo !== 'senha'; else alterarSenhaTemplate">
       <c-row class="g-3">
         <c-col md="8">
-          <label class="form-label">Nome</label>
+          <label class="form-label">Nome <span class="text-danger">*</span></label>
           <input cFormControl type="text" [(ngModel)]="usuarioSelecionado.nome" maxlength="120" />
         </c-col>
 
         <c-col md="4">
-          <label class="form-label">Usuário/Login</label>
-          <input cFormControl type="text" [(ngModel)]="usuarioSelecionado.usuario" maxlength="50" />
+          <label class="form-label">Usuário/Login <span class="text-danger">*</span></label>
+          <input cFormControl type="text" [(ngModel)]="usuarioSelecionado.usuario" maxlength="50" autocomplete="off" />
         </c-col>
 
         <c-col md="8">
-          <label class="form-label">E-mail</label>
-          <input cFormControl type="email" [(ngModel)]="usuarioSelecionado.email" maxlength="255" />
+          <label class="form-label">E-mail <span class="text-danger">*</span></label>
+          <input cFormControl type="email" [(ngModel)]="usuarioSelecionado.email" maxlength="255" autocomplete="off" />
         </c-col>
 
         <c-col md="4" *ngIf="modo === 'novo'">
-          <label class="form-label">Senha</label>
-          <input cFormControl type="password" [(ngModel)]="usuarioSelecionado.senha" maxlength="80" />
+          <label class="form-label">Senha <span class="text-danger">*</span></label>
+          <input
+            cFormControl
+            type="password"
+            placeholder="Informe a senha"
+            [(ngModel)]="usuarioSelecionado.senha"
+            maxlength="80"
+            autocomplete="new-password"
+          />
         </c-col>
 
         <c-col md="6">
@@ -203,13 +210,13 @@
 
       <c-row class="g-3">
         <c-col md="6">
-          <label class="form-label">Nova senha</label>
-          <input cFormControl type="password" [(ngModel)]="novaSenha" maxlength="80" />
+          <label class="form-label">Nova senha <span class="text-danger">*</span></label>
+          <input cFormControl type="password" [(ngModel)]="novaSenha" maxlength="80" autocomplete="new-password" />
         </c-col>
 
         <c-col md="6">
-          <label class="form-label">Confirmar senha</label>
-          <input cFormControl type="password" [(ngModel)]="confirmarSenha" maxlength="80" />
+          <label class="form-label">Confirmar senha <span class="text-danger">*</span></label>
+          <input cFormControl type="password" [(ngModel)]="confirmarSenha" maxlength="80" autocomplete="new-password" />
         </c-col>
       </c-row>
     </ng-template>
